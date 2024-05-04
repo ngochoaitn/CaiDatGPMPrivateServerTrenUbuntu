@@ -22,13 +22,15 @@ Link video hướng dẫn: [https://youtu.be/z1xqG31W6gs](https://youtu.be/z1xqG
 ```
 > sudo mkdir /var/www/html/GPM_PrivateServer
 > sudo chmod 777 /var/www/html/GPM_PrivateServer
-Upload file code
+```
+Tiến hành Upload file code lên thư mục /var/www/html/GPM_PrivateServer (xem thêm tại video)
+```
 > cd /var/www/html/GPM_PrivateServer
 > unzip full_v12-2023.zip
 > php artisan
 > php artisan storage:link
 ```
-**Chú ý:** Trong trường hợp chuyển private server từ host khác về máy này thì cần sao lưu thư mục /public/storage/profiles trước sau đó đó xóa đi bằng lệnh `rm -rf  public/storage/` rồi chạy lại lệnh `php artisan storage:link`
+**Chú ý:** Trong trường hợp chuyển private server từ host khác về máy này thì cần sao lưu thư mục /public/storage/profiles trước sau đó đó xóa đi bằng lệnh `rm -rf public/storage/` rồi chạy lại lệnh `php artisan storage:link`
 
 ## Bước 3: Tạo cơ sở dữ liệu
 ```
@@ -53,13 +55,13 @@ Upload file code
 Sửa: 
 - Tên cơ sử dỡ liệu
 - Tài khoản, mật khẩu truy cập mysql
-- Thông tin S3 (nếu lưu profile ở S3)
+- Thông tin S3 hoặc Digital Ocean (nếu lưu profile ở S3, DO)
 
 ## Bước 5: Cấu hình apache, php
 ```
 > sudo nano /etc/apache2/sites-available/000-default.conf
 ```
-Rồi dổi site mặc định từ cổng 80 sang cổng 81
+Rồi đổi site mặc định từ cổng 80 sang cổng 81
 ```
 > sudo nano /etc/php/8.1/apache2/php.ini
 ```
@@ -68,7 +70,7 @@ Tiếp theo tạo file cấu hình apache
 ```
 > sudo nano /etc/apache2/sites-available/GPM_PrivateServer.conf
 ```
-Nhập nội dung này vào file
+Nhập nội dung dưới đây vào file (**chú ý** tệp cấu hình sử dụng cổng 80)
 ```
 <VirtualHost *:80>
      ServerAdmin admin@admin.com
@@ -93,20 +95,23 @@ Tiếp tục cấu hình apache
 > sudo systemctl reload apache2
 > sudo systemctl restart apache2
 ```
+Đến đây là xong rồi!
 
-## *** Cấu hình thêm (tùy chọn):
+## Một số nội dung bổ sung
+### Cấu hình thêm (tùy chọn)
 Trường hợp sử dụng tường lửa cần mở cho apache đi qua
 ```
 > sudo ufw allow 'Apache'
 ```
 
-Nếu cầu mở thêm cổng thì cấu hình thêm tại:
+Nếu cầu mở thêm cổng cho apache thì cấu hình thêm tại:
 ```
 > sudo nano /etc/apache2/ports.conf
 ```
 
-## Xử lý lỗi:
-- Could not get lock /var/lib/dpkg/lock. It is held by process 6018 (unattended-upgr)
+
+### Xử lý lỗi
+- Could not get lock /var/lib/dpkg/lock. It is held by process xxxx (unattended-upgr)
 ```
 > sudo systemctl stop unattended-upgrades
 > sudo rm /var/lib/dpkg/lock-frontend
